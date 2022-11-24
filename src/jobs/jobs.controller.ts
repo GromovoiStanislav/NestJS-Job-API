@@ -11,6 +11,7 @@ import {
   HttpException,
   HttpStatus,
   UsePipes,
+  Request,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { JobDTO } from './dtos/job.dto';
@@ -67,7 +68,8 @@ export class JobsController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id): Promise<Job> {
+  delete(@Param('id') id, @Request() req): Promise<Job> {
+    console.log(req.local);
     return this.jobsService.delete(id);
   }
 }
