@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>Handlebars - Job Index</title>
+  </head>
+  <body>
+    <h1>Handlebars - Job Index</h1>
+    <ul class='jobs_list'>
+      {{#each jobs}}
+        <li>{{title}} - USD {{salary}}</li>
+      {{/each}}
+    </ul>
+  </body>
+</html>

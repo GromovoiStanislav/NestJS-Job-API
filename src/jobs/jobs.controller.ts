@@ -18,6 +18,7 @@ import {
   UseInterceptors,
   CACHE_MANAGER,
   Inject,
+  Render,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { JobDTO } from './dtos/job.dto';
@@ -39,10 +40,16 @@ export class JobsController {
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
+  @Get('view')
+  @Render('jobs/index')
+  root() {
+    return this.jobsService.findAll().then((result) => ({ jobs: result }));
+  }
+
   @Get()
   @CacheKey('allJobs')
   @CacheTTL(15)
-  findAll() {
+  findAll(): Promise<Job[]> {
     return this.jobsService.findAll();
   }
 

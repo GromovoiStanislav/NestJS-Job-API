@@ -1,0 +1,8 @@
+html
+  head
+    title='Pug - Job Index'
+  body
+    h1='Pug - Job Index'
+    ul
+      each job in jobs
+        li= job.title + ' - USD ' + job.salary
