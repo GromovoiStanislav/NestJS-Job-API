@@ -27,9 +27,10 @@ import { ValidationPipe } from '../pipes/validation.pipe';
 import { ValidationExceptionFilter } from '../filters/validation-exception.filter';
 import { JobData } from '../decorators/jobdata.decorator';
 import { Cache } from 'cache-manager'; //!!! обязательно "^4.1.0" версия. 5 не работает !!!
+import { LoggingInterceptor } from 'src/interceptor/logging.interceptor';
 
 @Controller('jobs')
-@UseInterceptors(CacheInterceptor)
+@UseInterceptors(CacheInterceptor, LoggingInterceptor)
 //@UsePipes(ValidationPipe) //На уровне контроллера
 //@UseFilters(HttpExceptionFilter)//На уровне контроллера
 export class JobsController {
