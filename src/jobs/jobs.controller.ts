@@ -12,6 +12,12 @@ import {
   HttpStatus,
   UsePipes,
   Request,
+  CacheKey,
+  CacheTTL,
+  CacheInterceptor,
+  UseInterceptors,
+  CACHE_MANAGER,
+  Inject,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { JobDTO } from './dtos/job.dto';
@@ -20,19 +26,40 @@ import { Job } from './interfaces/job.interface';
 import { ValidationPipe } from '../pipes/validation.pipe';
 import { ValidationExceptionFilter } from '../filters/validation-exception.filter';
 import { JobData } from '../decorators/jobdata.decorator';
+import { Cache } from 'cache-manager'; //!!! обязательно "^4.1.0" версия. 5 не работает !!!
 
 @Controller('jobs')
+@UseInterceptors(CacheInterceptor)
 //@UsePipes(ValidationPipe) //На уровне контроллера
 //@UseFilters(HttpExceptionFilter)//На уровне контроллера
 export class JobsController {
-  constructor(private readonly jobsService: JobsService) {}
+  constructor(
+    private readonly jobsService: JobsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {}
 
   @Get()
+  @CacheKey('allJobs')
+  @CacheTTL(15)
   findAll() {
     return this.jobsService.findAll();
   }
 
+  // у контроллера надо удалить @UseInterceptors(CacheInterceptor)
+  @Get('cache')
+  async findInCache() {
+    const value = await this.cacheManager.get('key');
+    if (value) {
+      return { value, from: 'cache' };
+    } else {
+      const value = { id: 1, name: 'Nest' };
+      await this.cacheManager.set('key', value, 30);
+      return value;
+    }
+  }
+
   @Get(':id')
+  @CacheTTL(30)
   //@UseFilters(HttpExceptionFilter)//На уровне ендпоинта
   find(@Param('id') id) {
     return this.jobsService

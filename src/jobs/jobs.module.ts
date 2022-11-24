@@ -1,4 +1,5 @@
 import {
+  CacheModule,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -11,7 +12,13 @@ import { JobsService } from './jobs.service';
 import { JobSchema } from './schemas/job.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Job', schema: JobSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: 'Job', schema: JobSchema }]),
+    // CacheModule.register({
+    //   ttl: 5, // seconds
+    //   max: 10, // maximum number of items in cache
+    // }),
+  ],
   controllers: [JobsController],
   providers: [JobsService],
 })
